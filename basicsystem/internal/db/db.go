@@ -8,6 +8,8 @@ import (
 
 var UrlService *services.URLService
 
+var LogsService *services.LogsService
+
 func SetUpDB() {
 
 	// Initialize the in-memory database
@@ -15,5 +17,5 @@ func SetUpDB() {
 	// For simplicity, we can use a map to store the original URLs and their corresponding shortened URLs.
 
 	UrlService = services.NewURLService()
-
+	LogsService = services.NewLogsService()
 }

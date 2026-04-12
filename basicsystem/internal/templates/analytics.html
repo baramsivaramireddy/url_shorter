@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="30">
+    <title>URL Shortener Analytics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans p-6">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">URL Shortener Analytics</h1>
+        
+        <h2 class="text-2xl font-semibold text-gray-700 mb-4">URL Access Count</h2>
+        <div class="bg-white shadow-md rounded-lg overflow-hidden mb-8">
+            <table class="min-w-full table-auto">
+                <thead class="bg-gray-200">
+                    <tr>
+                        <th class="px-4 py-2 text-left text-gray-600 font-medium">Short Code</th>
+                        <th class="px-4 py-2 text-left text-gray-600 font-medium">Access Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{range $shortCode, $count := .analytics.url_access_count}}
+                    <tr class="border-t">
+                        <td class="px-4 py-2 text-gray-800">{{$shortCode}}</td>
+                        <td class="px-4 py-2 text-gray-800">{{$count}}</td>
+                    </tr>
+                    {{end}}
+                </tbody>
+            </table>
+        </div>
+        
+        <h2 class="text-2xl font-semibold text-gray-700 mb-4">Write Logs</h2>
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <table class="min-w-full table-auto">
+                <thead class="bg-gray-200">
+                    <tr>
+                        <th class="px-4 py-2 text-left text-gray-600 font-medium">ID</th>
+                        <th class="px-4 py-2 text-left text-gray-600 font-medium">Original URL</th>
+                        <th class="px-4 py-2 text-left text-gray-600 font-medium">Short Code</th>
+                        <th class="px-4 py-2 text-left text-gray-600 font-medium">Created At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{range .writeLogs}}
+                    <tr class="border-t">
+                        <td class="px-4 py-2 text-gray-800">{{.ID}}</td>
+                        <td class="px-4 py-2 text-gray-800">{{.OriginalURL}}</td>
+                        <td class="px-4 py-2 text-gray-800">{{.ShortCode}}</td>
+                        <td class="px-4 py-2 text-gray-800">{{.CreatedAt}}</td>
+                    </tr>
+                    {{end}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
+

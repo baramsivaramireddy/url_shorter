@@ -29,12 +29,14 @@ func ShortenURL(c *gin.Context) {
 	}
 
 	shortenedURL, err := db.UrlService.ShortenURL(req.OriginalURL)
+
+	db.LogsService.LogWrite(req.OriginalURL, shortenedURL)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"shortened_url": shortenedURL})
+	c.JSON(http.StatusCreated, gin.H{"shortened_url": shortenedURL})
 }
 
 func RedirectURL(c *gin.Context) {
@@ -45,11 +47,31 @@ func RedirectURL(c *gin.Context) {
 
 	ShortCode := c.Param("shortURL")
 	originalURL, found := db.UrlService.GetOriginalURL(ShortCode)
+
+	db.LogsService.LogRead(ShortCode, originalURL)
 	if !found {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Short URL not found"})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"original_url": originalURL})
+
+}
+
+func Analatics(c *gin.Context) {
+
+	// return the analytics data for the shortened URLs
+	// and writelogs too
+
+	// return a html page and display the analytics data in a table format
+	// call this api every 30 secs to get the latest analytics data and update the table
+
+	analytics := db.LogsService.AnalyzeLogs()
+	writeLogs := db.LogsService.WriteLogs()
+
+	c.HTML(http.StatusOK, "analytics.html", gin.H{
+		"analytics": analytics,
+		"writeLogs": writeLogs,
+	})
 
 }

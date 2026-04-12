@@ -11,5 +11,6 @@ func RegisterURLRoutes(r *gin.Engine) {
 
 	urlGroup.GET("/:shortURL", handlers.RedirectURL)
 	urlGroup.POST("/", handlers.ShortenURL)
+	urlGroup.GET("/", handlers.Analatics)
 
 }
