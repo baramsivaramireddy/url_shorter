@@ -32,10 +32,9 @@ const Long_URLs = [
     'https://www.example.com/very/long/url/5'
 ];
 
-
+const BASE_URL = 'http://34.204.175.141:8080';
 export const options = {
-
-
+    setupTimeout: '5m',
     scenarios: {
         postScenario: {
             executor: 'ramping-arrival-rate',
@@ -85,7 +84,7 @@ export function postScenario(data) {
 
 
     const longURL = Long_URLs[Math.floor(Math.random() * Long_URLs.length)];
-    const res = http.post('http://localhost:8080/url', JSON.stringify({ 'original_url': longURL }), {
+    const res = http.post(`${BASE_URL}/url`, JSON.stringify({ 'original_url': longURL }), {
         headers: { 'Content-Type': 'application/json' },
     });
     if (res.status === 201) {
@@ -127,12 +126,15 @@ export function setup() {
     // call 100 POST requests to the /shorten endpoint to populate the shortenURLs array
     for (let i = 0; i < 100; i++) {
         const longURL = Long_URLs[Math.floor(Math.random() * Long_URLs.length)];
-        const res = http.post('http://localhost:8080/url', JSON.stringify({ 'original_url': longURL }), {
+        const res = http.post(`${BASE_URL}/url`, JSON.stringify({ 'original_url': longURL }), {
             headers: { 'Content-Type': 'application/json' },
         });
         if (res.status === 201) {
             const shortenURL = res.json().shortened_url;
-            shortenURLs.push(shortenURL);
+            // extract last part of the shortenURL and append it to the BASE_URL to get the full shortened URL
+            const shortenURLPath = shortenURL.split('/').pop();
+            const fullShortenURL = `${BASE_URL}/url/${shortenURLPath}`;
+            shortenURLs.push(fullShortenURL);
         } else {
             console.log(`Failed to shorten URL: ${longURL} `);
         }
