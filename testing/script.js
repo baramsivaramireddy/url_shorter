@@ -32,47 +32,38 @@ const Long_URLs = [
     'https://www.example.com/very/long/url/5'
 ];
 
-const BASE_URL = 'http://34.204.175.141:8080';
+const BASE_URL = 'http://44.222.179.145:8080';
+
+
 export const options = {
+
     setupTimeout: '5m',
     scenarios: {
         postScenario: {
-            executor: 'ramping-arrival-rate',
+            executor: 'ramping-vus',
             exec: 'postScenario',
-            startRate: 500, // 5 iterations per second
-            timeUnit: '1s', // per second
+            startVUs: 0,
 
             stages: [
-                { target: 100, duration: '30s' },
-                { target: 300, duration: '30s' },
-                { target: 500, duration: '30s' },
-                { target: 500, duration: '2m' },
-                { target: 300, duration: '1m' },
-                { target: 0, duration: '30s' }
-
+                { duration: '1m', target: 30 },
+                { duration: '2m', target: 50 },
+                { duration: '5m', target: 50 },
+                { duration: '3m', target: 0 },
             ],
-
-            preAllocatedVUs: 20, // pre-allocate 10 VUs to handle the load
-            maxVUs: 40, // allow up to 20 VUs if needed
-
         },
         getScenario: {
-            executor: 'ramping-arrival-rate',
+            executor: 'ramping-vus',
             exec: 'getScenario',
-            startRate: 950, // 95 iterations per second
-            timeUnit: '1s', // per second
+            startVUs: 0,
+
             stages: [
-                { target: 1000, duration: '30s' },
-                { target: 5000, duration: '30s' },
-                { target: 9500, duration: '30s' },
-                { target: 9500, duration: '2m' },
-                { target: 1000, duration: '1m' },
-                { target: 0, duration: '30s' }
+                
+                {duration: '1m', target: 300 },
+                {duration: '2m', target: 950 },
+                {duration: '5m', target: 950 },
+                {duration: '3m', target: 0 },
 
             ],
-
-            preAllocatedVUs: 100, // pre-allocate 50 VUs to handle the load
-            maxVUs: 500, // allow up to 100 VUs if needed            
         },
     },
 }
