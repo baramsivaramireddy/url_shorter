@@ -32,7 +32,7 @@ const Long_URLs = [
     'https://www.example.com/very/long/url/5'
 ];
 
-const BASE_URL = 'http://44.222.179.145:8080';
+const BASE_URL = 'http://18.232.181.158:8080';
 
 
 export const options = {
@@ -40,29 +40,31 @@ export const options = {
     setupTimeout: '5m',
     scenarios: {
         postScenario: {
-            executor: 'ramping-vus',
+            executor: 'ramping-arrival-rate',
             exec: 'postScenario',
-            startVUs: 0,
-
+          
+            preAllocatedVUs: 100,
+            startRate  : 5,
+            timeUnit: '1s',
             stages: [
-                { duration: '1m', target: 30 },
-                { duration: '2m', target: 50 },
-                { duration: '5m', target: 50 },
-                { duration: '3m', target: 0 },
+                {duration: '1m', target:3 },
+                {duration: '2m', target: 5 },
+                {duration: '5m', target: 5 },
+                {duration: '3m', target: 0 },
             ],
+            maxVUs: 1000,
         },
         getScenario: {
-            executor: 'ramping-vus',
+            executor: 'ramping-arrival-rate',
             exec: 'getScenario',
-            startVUs: 0,
-
+            startRate  : 95,
+            timeUnit: '1s',
+            preAllocatedVUs: 100,   
             stages: [
-                
-                {duration: '1m', target: 300 },
-                {duration: '2m', target: 950 },
-                {duration: '5m', target: 950 },
-                {duration: '3m', target: 0 },
-
+             {duration: '1m', target: 57 },
+             {duration: '2m', target: 95 },
+             {duration: '5m', target: 95 },
+             {duration: '3m', target: 0 },
             ],
         },
     },
