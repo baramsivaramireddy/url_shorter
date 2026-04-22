@@ -1,0 +1,50 @@
+Install Go (required for xk6 build)
+
+If you don’t have Go:
+
+sudo apt install golang -y
+
+You can verify:
+
+go version
+
+If Go isn't installed correctly, I’ll guide you—but usually this works.
+
+2️⃣ Install xk6 CLI
+
+Run:
+
+go install go.k6.io/xk6/cmd/xk6@latest
+
+This installs xk6 into:
+
+~/go/bin/xk6
+3️⃣ Add xk6 to PATH
+
+Run:
+
+export PATH=$PATH:~/go/bin
+
+To make it permanent:
+
+echo 'export PATH=$PATH:~/go/bin' >> ~/.bashrc
+source ~/.bashrc
+4️⃣ Check if it's working
+xk6 --version
+
+You should now see something like:
+
+xk6 v0.x.x
+🧱 5️⃣ Build k6 with Redis extension
+
+Now run:
+
+xk6 build --with github.com/grafana/xk6-redis
+
+This produces:
+
+./k6
+
+Then run your dashboard test:
+
+K6_WEB_DASHBOARD=true K6_WEB_DASHBOARD_HOST=0.0.0.0 ./k6 run script.js

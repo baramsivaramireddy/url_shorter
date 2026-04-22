@@ -18,6 +18,7 @@
 
 import k6 from 'k6';
 import http, { post } from 'k6/http';
+import redis from "k6/x/redis";
 
 import { Counter } from 'k6/metrics';
 
@@ -34,7 +35,7 @@ const Long_URLs = [
 
 const BASE_URL = 'http://18.232.181.158:8080';
 
-
+const client = new redis.Client('redis://localhost:6379');
 export const options = {
 
     setupTimeout: '5m',
@@ -74,8 +75,6 @@ export const options = {
 
 export function postScenario(data) {
 
-
-
     const longURL = Long_URLs[Math.floor(Math.random() * Long_URLs.length)];
     const res = http.post(`${BASE_URL}/url`, JSON.stringify({ 'original_url': longURL }), {
         headers: { 'Content-Type': 'application/json' },
@@ -109,8 +108,6 @@ export function getScenario(data) {
 }
 
 export function setup() {
-
-
 
     const shortenURLs = []
 
