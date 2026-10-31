@@ -8,18 +8,22 @@
     "start": "node src/server.js",
     "build": "vite build",
     "test": "node --test",
-    "test:watch": "node --test --watch"
+    "test:watch": "node --test --watch",
+    "data:generate": "node testing/generate-links.js",
+    "test:freshness": "node testing/verify-freshness.js"
   },
   "dependencies": {
-    "@vitejs/plugin-react": "^5.0.0",
     "better-sqlite3": "^12.5.0",
-    "express": "^5.1.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "recharts": "^2.15.0",
-    "vite": "^7.0.0"
+    "express": "^5.1.0"
   },
   "engines": {
     "node": ">=24"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.1.2",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "recharts": "^3.10.1",
+    "vite": "^8.3.5"
   }
 }

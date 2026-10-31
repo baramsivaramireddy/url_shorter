@@ -29,6 +29,12 @@ afterEach(async () => {
   database.close();
 });
 
+test("reports the database health", async () => {
+  const response = await fetch(`${origin}/health`);
+  assert.equal(response.status, 200);
+  assert.deepEqual(await response.json(), { status: "ok" });
+});
+
 test("creates a link, records its event, and redirects with a click event", async () => {
   const createResponse = await fetch(`${origin}/link`, {
     method: "POST",
@@ -127,6 +133,14 @@ test("aggregates create and click events into time buckets and filters by short 
       ],
     ],
   );
+
+  params.delete("shortcode");
+  const allLinksResponse = await fetch(`${origin}/graph?${params}`);
+  const allLinksGraph = await allLinksResponse.json();
+  assert.deepEqual(
+    allLinksGraph.series.find(({ type }) => type === "click").points.map(({ count }) => count),
+    [2, 1],
+  );
 });
 
 test("rejects malformed analytics ranges", async () => {
@@ -192,6 +206,39 @@ test("retries unique-code conflicts up to three attempts", async () => {
   } finally {
     await new Promise((resolve, reject) =>
       conflictServer.close((error) => (error ? reject(error) : resolve())),
+    );
+  }
+});
+
+test("retries a collision and persists the next unique code", async () => {
+  database.prepare(
+    "INSERT INTO links (short_code, destination, created_at) VALUES (?, ?, ?)",
+  ).run("abc123", "https://existing.example", Date.now());
+  const candidates = ["abc123", "def456"];
+  let attempts = 0;
+  const app = createApp({
+    database,
+    codeGenerator: () => candidates[attempts++],
+  });
+  const retryServer = app.listen(0);
+  await new Promise((resolve) => retryServer.once("listening", resolve));
+  try {
+    const response = await fetch(`http://127.0.0.1:${retryServer.address().port}/link`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ destination: "https://created.example" }),
+    });
+    assert.equal(response.status, 201);
+    assert.equal((await response.json()).shortCode, "def456");
+    assert.equal(attempts, 2);
+    assert.equal(database.prepare("SELECT COUNT(*) AS count FROM links").get().count, 2);
+    assert.equal(
+      database.prepare("SELECT COUNT(*) AS count FROM analytics_events").get().count,
+      1,
+    );
+  } finally {
+    await new Promise((resolve, reject) =>
+      retryServer.close((error) => (error ? reject(error) : resolve())),
     );
   }
 });

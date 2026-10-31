@@ -80,6 +80,15 @@ export function createApp({
   app.disable("x-powered-by");
   app.use(express.json({ limit: "16kb" }));
 
+  app.get("/health", (_request, response, next) => {
+    try {
+      database.prepare("SELECT 1").get();
+      response.json({ status: "ok" });
+    } catch (error) {
+      next(error);
+    }
+  });
+
   app.post("/link", (request, response, next) => {
     const { destination } = request.body ?? {};
     if (!isValidDestination(destination)) {
