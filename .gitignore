@@ -1,0 +1,8 @@
+node_modules/
+dist/
+data/
+.env
+.DS_Store
+testing/links.csv
+testing/links.failures.csv
+testing/results-summary.json

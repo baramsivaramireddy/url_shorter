@@ -1,0 +1,15 @@
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "${HOST_PORT:-3000}:3000"
+    environment:
+      PORT: "3000"
+      DATABASE_PATH: /app/data/shortener.sqlite
+      PUBLIC_BASE_URL: "${PUBLIC_BASE_URL:-http://localhost:3000}"
+    volumes:
+      - shortener-data:/app/data
+
+volumes:
+  shortener-data:

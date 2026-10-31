@@ -1,0 +1,10 @@
+.git
+.gitignore
+.dockerignore
+node_modules
+dist
+data
+.env
+testing/links.csv
+testing/links.failures.csv
+testing/results-summary.json
